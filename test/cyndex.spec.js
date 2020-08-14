@@ -15,8 +15,9 @@ describe('cyndex client tests', () => {
   const SERVER = 'http://127.0.0.1:1234';
 
   const DUMMY_USERNAME = 'dummy-username';
-  const DUMMY_PASSWORD = 'dummy-password'; 
+  const DUMMY_PASSWORD = 'dummy-password';
   const DUMMY_UUID = 'dummy-uuid';
+  const DUMMY_TOKEN = 'dummy-token';
 
   const DEFAULT_SERVER = 'http://public.ndexbio.org/v2'
 
@@ -135,7 +136,7 @@ describe('cyndex client tests', () => {
     cyndex.setBasicAuth(DUMMY_USERNAME, DUMMY_PASSWORD);
 
     getNock().options('/cyndex2/v1/networks/current')
-    .reply(200, {});
+      .reply(200, {});
 
     getNock().put('/cyndex2/v1/networks/current')
       .reply(repeatRequest);
@@ -185,6 +186,64 @@ describe('cyndex client tests', () => {
     });
   });
 
+  it('importNetworkGoogleAuth', (done) => {
+    const cyndex = new CyNDEx();
+
+    let authInstance = {
+      currentUser: {
+        get: () => {
+          return {
+            getAuthResponse: () => {
+              return { id_token: DUMMY_TOKEN }
+            }
+          }
+        }
+      }
+    };
+
+    let googleUser = {
+      getAuthInstance: () => {
+        return authInstance
+      }
+    };
+
+    cyndex.setGoogleAuth(googleUser);
+
+    getNock().post('/cyndex2/v1/networks')
+      .reply(repeatRequest);
+
+    cyndex.postNDExNetworkToCytoscape(DUMMY_UUID).then((response) => {
+      expect(response.uuid).to.equal(DUMMY_UUID);
+      expect(response.serverUrl).to.equal(DEFAULT_SERVER);
+      expect(response.idToken).to.equal(DUMMY_TOKEN);
+      expect(response.accessKey).to.equal(undefined);
+      done();
+    });
+  });
+
+  it('importNetworkGoogleUserAuth', (done) => {
+    const cyndex = new CyNDEx();
+
+    currentUser = {
+      getAuthResponse: () => {
+        return { id_token: DUMMY_TOKEN }
+      }
+    };
+
+    cyndex.setGoogleUser(currentUser);
+
+    getNock().post('/cyndex2/v1/networks')
+      .reply(repeatRequest);
+
+    cyndex.postNDExNetworkToCytoscape(DUMMY_UUID).then((response) => {
+      expect(response.uuid).to.equal(DUMMY_UUID);
+      expect(response.serverUrl).to.equal(DEFAULT_SERVER);
+      expect(response.idToken).to.equal(DUMMY_TOKEN);
+      expect(response.accessKey).to.equal(undefined);
+      done();
+    });
+  });
+
   it('importNetworkAccessKey', (done) => {
     const cyndex = new CyNDEx();
 
@@ -199,29 +258,8 @@ describe('cyndex client tests', () => {
       expect(response.uuid).to.equal(DUMMY_UUID);
       expect(response.accessKey).to.equal(DUMMY_ACCESS_KEY);
       expect(response.serverUrl).to.equal(DEFAULT_SERVER);
-      expect(response.username).to.equal(undefined);
-      expect(response.password).to.equal(undefined);
-      done();
-    });
-  });
-
-  it('importNetworkAccessIdToken', (done) => {
-    const cyndex = new CyNDEx();
-
-    const DUMMY_ID_TOKEN = 'dummy-id-token';
-
-    cyndex.setBasicAuth(DUMMY_USERNAME, DUMMY_PASSWORD);
-
-    getNock().post('/cyndex2/v1/networks')
-      .reply(repeatRequest);
-
-    cyndex.postNDExNetworkToCytoscape(DUMMY_UUID, undefined, DUMMY_ID_TOKEN).then((response) => {
-      expect(response.uuid).to.equal(DUMMY_UUID);
-      expect(response.idToken).to.equal(DUMMY_ID_TOKEN);
-      expect(response.serverUrl).to.equal(DEFAULT_SERVER);
-      expect(response.username).to.equal(undefined);
-      expect(response.password).to.equal(undefined);
-      expect(response.accessKey).to.equal(undefined);
+      expect(response.username).to.equal(DUMMY_USERNAME);
+      expect(response.password).to.equal(DUMMY_PASSWORD);
       done();
     });
   });
@@ -229,7 +267,7 @@ describe('cyndex client tests', () => {
   it('postCXNetworkToCytoscape', (done) => {
     const cyndex = new CyNDEx();
 
-    const DUMMY_CX = { 'dummy-field' : 'dummy-value'};
+    const DUMMY_CX = { 'dummy-field': 'dummy-value' };
 
     cyndex.setBasicAuth(DUMMY_USERNAME, DUMMY_PASSWORD);
 
