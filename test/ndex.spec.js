@@ -203,8 +203,8 @@ describe('Authticated network test', () =>{
           sleep(3000).then(()=>{
             ndexclient.getRawNetwork(networkId)
               .then((newNet)=>{
-                expect(newNet[7].edges.length).to.equal(37);
-                newNet[9].networkAttributes[0] = {n: 'name', v: 'my updated network'};
+                expect(newNet[5].edges.length).to.equal(37);
+                newNet[7].networkAttributes[0] = {n: 'name', v: 'my updated network'};
                 return ndexclient.updateNetworkFromRawCX(networkId, newNet);
               }, errorPrinter)
               .then((res)=> {
@@ -212,8 +212,8 @@ describe('Authticated network test', () =>{
                   return ndexclient.getRawNetwork(networkId);
                 }, errorPrinter)
                   .then((updatedNet)=>{
-                    expect(updatedNet[7].edges.length).to.equal(37);
-                    expect(updatedNet[9].networkAttributes[0].v).to.equal('my updated network');
+                    expect(updatedNet[5].edges.length).to.equal(37);
+                    expect(updatedNet[7].networkAttributes[0].v).to.equal('my updated network');
 
                     return ndexclient.deleteNetwork(networkId);
                   }, errorPrinter)
@@ -399,7 +399,8 @@ describe('Search function test', () =>{
     return ndexclient.getCX2MetaData(
       'be5c3f09-254f-11e7-bbd5-06832d634f41').then((r)=> {
         expect(r.length).to.equal(8);
-
+        expect(r[3].name).to.equal("nodeBypasses");
+        expect(r[3].elementCount).to.equal(402);
       }, errorPrinter
     );
   });
