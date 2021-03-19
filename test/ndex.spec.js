@@ -181,11 +181,11 @@ describe('Authticated network test', () =>{
   it('get private network', ()=> {
     return ndexclient.getRawNetwork('2977ee7f-1d34-11e7-8145-06832d634f41')
       .then((network) => {
-        expect(network[12].nodes.length).to.equal(37);
-        expect(network[9].edges.length).to.equal(37);
-        expect(network[11].networkAttributes.length).to.equal(8);
-        expect(network[5].citations.length).to.equal(1);
-        expect(network[14].supports.length).to.equal(15);
+        expect(network[10].nodes.length).to.equal(37);
+        expect(network[7].edges.length).to.equal(37);
+        expect(network[9].networkAttributes.length).to.equal(8);
+        expect(network[3].citations.length).to.equal(1);
+        expect(network[12].supports.length).to.equal(15);
 
       });
   });
@@ -203,8 +203,8 @@ describe('Authticated network test', () =>{
           sleep(3000).then(()=>{
             ndexclient.getRawNetwork(networkId)
               .then((newNet)=>{
-                expect(newNet[7].edges.length).to.equal(37);
-                newNet[9].networkAttributes[0] = {n: 'name', v: 'my updated network'};
+                expect(newNet[5].edges.length).to.equal(37);
+                newNet[7].networkAttributes[0] = {n: 'name', v: 'my updated network'};
                 return ndexclient.updateNetworkFromRawCX(networkId, newNet);
               }, errorPrinter)
               .then((res)=> {
@@ -212,8 +212,8 @@ describe('Authticated network test', () =>{
                   return ndexclient.getRawNetwork(networkId);
                 }, errorPrinter)
                   .then((updatedNet)=>{
-                    expect(updatedNet[7].edges.length).to.equal(37);
-                    expect(updatedNet[9].networkAttributes[0].v).to.equal('my updated network');
+                    expect(updatedNet[5].edges.length).to.equal(37);
+                    expect(updatedNet[7].networkAttributes[0].v).to.equal('my updated network');
 
                     return ndexclient.deleteNetwork(networkId);
                   }, errorPrinter)
@@ -391,6 +391,16 @@ describe('Search function test', () =>{
         expect(r[3].id).to.equal(579);
         expect(r[3].s).to.equal(384);
         expect(r[3].v.weight).to.equal(0.367647058824);
+      }, errorPrinter
+    );
+  });
+
+  it('get cx2 metadata', ()=>{
+    return ndexclient.getCX2MetaData(
+      'be5c3f09-254f-11e7-bbd5-06832d634f41').then((r)=> {
+        expect(r.length).to.equal(8);
+        expect(r[3].name).to.equal("nodeBypasses");
+        expect(r[3].elementCount).to.equal(402);
       }, errorPrinter
     );
   });
