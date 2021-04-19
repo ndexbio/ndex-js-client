@@ -578,7 +578,6 @@ class NDEx {
     return this._httpPostV3ProtectedObj('/search/networks/' + uuid + '/edges', parameters, data);
   }
 
-
   getCX2MetaData(uuid, accessKey ) {
 
     let parameters = {
@@ -590,5 +589,14 @@ class NDEx {
 
     return this._httpGetV3ProtectedObj('networks/' + uuid + '/aspects', parameters);
   }
+
+  cancelDOIRequest(uuid) {
+    const cancelBody = 
+      {type: "Cancel_DOI", networkId: uuid}
+    ;
+
+    return this._httpPostProtectedObj('admin/request', {}, cancelBody);
+  }
+
 }
   module.exports = { NDEx };
