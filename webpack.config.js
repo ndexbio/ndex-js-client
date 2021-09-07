@@ -14,11 +14,16 @@ const minify = env.MINIFY === 'true';
 const config = {
   entry: __dirname + '/src/index.js',
   devtool: isProd ? false : 'inline-source-map',
-
+  mode: isProd ? 'production' : 'development',
+  target: 'node',
+  node: {
+    process: false
+  },
   output: {
     filename: './build/bundle.js',
     library: camelcase( pkg.name ),
-    libraryTarget: 'umd'
+    libraryTarget: 'umd',
+    globalObject: 'this'
   },
 
   externals: isProd ? Object.keys( pkg.dependencies || {} ) : [],
@@ -30,7 +35,10 @@ const config = {
   },
   plugins: [
     new webpack.EnvironmentPlugin(['NODE_ENV']),
-    minify ? new UglifyJSPlugin() : null
+    minify ? new UglifyJSPlugin() : null,
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    })
   ].filter(isNonNil)
 };
 
