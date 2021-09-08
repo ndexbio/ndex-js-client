@@ -1,6 +1,6 @@
-const axios = require('axios');
+// const axios = require('axios');
 
-class NDEx {
+export default class NDEx {
     constructor(hostprefix) {
       if (hostprefix === undefined || hostprefix === null || hostprefix === '') {
         throw new Error('NDEx server endpoint base URL is required in client constructor.');
@@ -591,7 +591,7 @@ class NDEx {
   }
 
   cancelDOIRequest(uuid) {
-    const cancelBody = 
+    const cancelBody =
       {type: "Cancel_DOI", networkId: uuid}
     ;
 
@@ -599,4 +599,5 @@ class NDEx {
   }
 
 }
-  module.exports = { NDEx };
+
+// module.exports = { NDEx };

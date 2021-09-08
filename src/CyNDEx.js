@@ -1,8 +1,9 @@
 const CY_REST_BASE_URL = 'http://127.0.0.1';
 
-const axios = require('axios');
+// const axios = require('axios');
+import axios from 'axios';
 
-class CyNDEx {
+export default class CyNDEx {
 
   constructor(port = 1234) {
     this._port = port;
@@ -132,14 +133,14 @@ class CyNDEx {
     return this._httpGet('/cyndex2/v1/networks/' + suid);
   }
 
-  postNDExNetworkToCytoscape(uuid, accessKey, createView = undefined) { 
+  postNDExNetworkToCytoscape(uuid, accessKey, createView = undefined) {
     const importParams = {
       serverUrl: this.getNDExServer() + '/v2',
       uuid: uuid,
       accessKey: accessKey,
       createView: createView
     };
-    
+
     const authorizationFields = this._getAuthorizationFields();
 
     return this._httpPost('/cyndex2/v1/networks', undefined, Object.assign(importParams, authorizationFields));
@@ -171,4 +172,4 @@ class CyNDEx {
   }
 }
 
-module.exports = { CyNDEx };
+// module.exports = { CyNDEx };

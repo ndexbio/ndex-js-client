@@ -1,4 +1,10 @@
-let NDEx = require('./NDEx.js').NDEx;
-let CyNDEx = require('./CyNDEx.js').CyNDEx;
 
-module.exports = { NDEx, CyNDEx };
+import NDEx from './NDEx';
+import CyNDEx from './CyNDEx';
+export default { NDEx, CyNDEx };
+
+
+// const { NDEx } = require('./NDEx');
+// const { CyNDEx } = require('./CyNDEx');
+
+// module.exports = { NDEx, CyNDEx };

@@ -1,6 +1,6 @@
 
 // Test example for nodejs
-const {NDEx} = require('../dist/build/bundle.js');
+const {NDEx} = require('../dist/node/bundle.js');
 
 let ndex0 = new NDEx('http://dev.ndexbio.org/v2');
 

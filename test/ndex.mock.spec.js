@@ -3,7 +3,7 @@
 const { expect } = require('chai');
 const nock = require('nock')
 
-const { NDEx } = require('../dist/build/bundle.js');
+const { NDEx } = require('../dist/node/bundle.js');
 
 const { repeatRequest} = require('./nockUtil.js');
 
