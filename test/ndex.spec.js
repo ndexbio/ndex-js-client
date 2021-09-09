@@ -422,4 +422,14 @@ describe('Search function test', () =>{
     );
   });
 
+  it('get cx2 network', ()=> {
+    return ndexclient.getCX2Network('be5c3f09-254f-11e7-bbd5-06832d634f41')
+      .then((network) => {
+        expect(network[4].nodes.length).to.equal(402);
+        expect(network[5].edges.length).to.equal(832);
+        expect(network[9].visualEditorProperties.length).to.equal(1);
+        expect(network[10].status.length).to.equal(1);
+      });
+  });
+
 });

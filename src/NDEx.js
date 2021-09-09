@@ -591,7 +591,7 @@ class NDEx {
   }
 
   cancelDOIRequest(uuid) {
-    const cancelBody = 
+    const cancelBody =
       {type: "Cancel_DOI", networkId: uuid}
     ;
 
