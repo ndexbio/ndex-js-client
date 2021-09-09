@@ -1,7 +1,7 @@
 /* global describe, it, before */
 
 const {expect } = require('chai');
-const {NDEx} = require('../dist/build/bundle.js');
+const {NDEx} = require('../src/');
 const {testAccount} = require('./testconfig.js');
 
 function sleep(ms) {

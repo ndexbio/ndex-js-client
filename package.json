@@ -2,7 +2,12 @@
   "name": "ndex-client",
   "version": "0.3.2",
   "description": "NDEx Javascript library",
-  "main": "./dist/build/bundle.js",
+  "main": "./dist/ndexClient.common.js",
+  "module": "src/index.js",
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "prepublish": "run-s build",
     "lint:js": "eslint ./src",
