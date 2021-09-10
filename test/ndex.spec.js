@@ -12,6 +12,19 @@ function errorPrinter(err) {
   console.log(err);
 }
 
+describe('input validation', () => {
+  it('throws an error when http:// or https:// is not at the start of the url', () => {
+    let url = 'dev.ndexbio.org/v2';
+
+    expect(() => new NDEx(url)).to.throw();
+  });
+
+  it('doesnt throw an error when the url has http:// or https:// at the start of the url', () => {
+    expect(() => new NDEx('http://dev.ndexbio.org/v2')).not.to.throw();
+    expect(() => new NDEx('https://dev.ndexbio.org/v2')).not.to.throw();
+  });
+});
+
 describe('testing client', () => {
   //this.timeout(5000);
   /*
