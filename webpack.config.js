@@ -1,6 +1,5 @@
 
 const isProd = false;
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const webConfig = {
   entry: __dirname + '/src/index.js',
