@@ -10,8 +10,8 @@
   ],
   "scripts": {
     "watch:js": "webpack --watch",
-    "build": "webpack",
-    "build-prod": "cross-env NODE_ENV=production run-s build",
+    "build": "webpack --mode=development",
+    "build-prod": "webpack --mode=production",
     "test": "nyc mocha"
   },
   "author": "Jing Chen",
@@ -20,11 +20,9 @@
     "axios": "^0.21.1"
   },
   "devDependencies": {
-    "babel-core": "^6.26.0",
-    "babel-eslint": "^10.1.0",
-    "babel-loader": "^7.1.2",
-    "babel-polyfill": "^6.9.1",
-    "babel-preset-env": "^1.6.0",
+    "@babel/core": "^7.15.5",
+    "@babel/preset-env": "^7.15.6",
+    "babel-loader": "^8.2.2",
     "chai": "^4.3.4",
     "cross-env": "^5.0.0",
     "mocha": "^7.2.0",

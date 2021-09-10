@@ -1,9 +1,5 @@
-
-const isProd = false;
-
 const webConfig = {
   entry: __dirname + '/src/index.js',
-  // devtool: isProd ? false : 'inline-source-map',
   target: 'web',
   output: {
     filename: './ndexClient.js',
@@ -12,7 +8,9 @@ const webConfig = {
 
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', options: {
+        presets: ['@babel/preset-env']
+      } }
     ]
   }
 };
@@ -20,20 +18,20 @@ const webConfig = {
 
 const nodeConfig = {
   entry: __dirname + '/src/index.js',
-  // devtool: isProd ? false : 'inline-source-map',
   target: 'node',
   output: {
     filename: './ndexClient.common.js',
-    // library: 'ndexClient',
     libraryTarget: 'commonjs'
   },
 
 
   module: {
     rules: [
-      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' }
+      { test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader', options: {
+        presets: ['@babel/preset-env']
+      } }
     ]
-  },
+  }
 };
 
 module.exports = [webConfig, nodeConfig];
