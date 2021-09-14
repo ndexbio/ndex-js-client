@@ -1,7 +1,7 @@
 /* global describe, it, before */
 
 const {expect } = require('chai');
-const {NDEx} = require('../dist/build/bundle.js');
+const {NDEx} = require('../src/');
 const {testAccount} = require('./testconfig.js');
 
 function sleep(ms) {
@@ -11,6 +11,19 @@ function sleep(ms) {
 function errorPrinter(err) {
   console.log(err);
 }
+
+describe('input validation', () => {
+  it('throws an error when http:// or https:// is not at the start of the url', () => {
+    let url = 'dev.ndexbio.org/v2';
+
+    expect(() => new NDEx(url)).to.throw();
+  });
+
+  it('doesnt throw an error when the url has http:// or https:// at the start of the url', () => {
+    expect(() => new NDEx('http://dev.ndexbio.org/v2')).not.to.throw();
+    expect(() => new NDEx('https://dev.ndexbio.org/v2')).not.to.throw();
+  });
+});
 
 describe('testing client', () => {
   //this.timeout(5000);
@@ -420,6 +433,16 @@ describe('Search function test', () =>{
         expect(r[3].elementCount).to.equal(402);
       }, errorPrinter
     );
+  });
+
+  it('get cx2 network', ()=> {
+    return ndexclient.getCX2Network('be5c3f09-254f-11e7-bbd5-06832d634f41')
+      .then((network) => {
+        expect(network[4].nodes.length).to.equal(402);
+        expect(network[5].edges.length).to.equal(832);
+        expect(network[9].visualEditorProperties.length).to.equal(1);
+        expect(network[10].status.length).to.equal(1);
+      });
   });
 
 });

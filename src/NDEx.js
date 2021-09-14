@@ -6,6 +6,14 @@ class NDEx {
         throw new Error('NDEx server endpoint base URL is required in client constructor.');
       }
 
+      // axios needs http to be at the front of the url.
+      // Otherwise any request will be redirected to localhost and fail
+      // with an ambiguous reason
+      let httpRegex = new RegExp("^(http|https)://", "i");
+      if (!httpRegex.test(hostprefix)) {
+        throw new Error(`"http://" or "https://" must be prefixed to the input url: ${hostprefix}`);
+      }
+
       this._host = hostprefix;
       this._v3baseURL = this._host.substring(0,this.host.lastIndexOf('v2')) + 'v3';
     }
@@ -591,7 +599,7 @@ class NDEx {
   }
 
   cancelDOIRequest(uuid) {
-    const cancelBody = 
+    const cancelBody =
       {type: "Cancel_DOI", networkId: uuid}
     ;
 

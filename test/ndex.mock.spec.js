@@ -1,9 +1,9 @@
 /* global describe, it, before */
 
 const { expect } = require('chai');
-const nock = require('nock')
+const nock = require('nock');
 
-const { NDEx } = require('../dist/build/bundle.js');
+const { NDEx } = require('../src/');
 
 const { repeatRequest} = require('./nockUtil.js');
 
