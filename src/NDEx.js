@@ -369,6 +369,10 @@ class NDEx {
       return this._httpPutObj('network/' + uuid, undefined, rawcx);
     }
 
+    updateCartesianLayoutAspect(uuid, payload){
+      return this._httpPutObj(`network/${uuid}/aspects`, undefined, payload);
+    }
+
     deleteNetwork(uuid) {
       return this._httpDeleteObj('network/' + uuid);
     }
