@@ -1,6 +1,11 @@
 # NDEx Javascript client
 
-Webpack based NDEx client libraries (Input: ES6, Output: universal library)
+A NDEx API Client written in JS.
+
+## Documentation
+
+- See the full [NDEx API documentation](https://home.ndexbio.org/using-the-ndex-server-api/)
+- Try out the [NDEx API](http://openapi.ndextools.org/)
 
 _Have in mind that you have to build your library before publishing. The files under the `dist` folder are the ones that should be distributed._
 
