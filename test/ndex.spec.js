@@ -446,3 +446,93 @@ describe('Search function test', () =>{
   });
 
 });
+
+describe('Networkset tests', () => {
+  let ndexclient = new NDEx('http://dev.ndexbio.org/v2');
+  ndexclient.setBasicAuth(testAccount.username, testAccount.password);
+  const networkSetData = { 
+      name: 'ndex-client-test-networkset', 
+      description: 'test networkset'
+  };
+
+  let createdNetworkSet = '';
+  let createdNetworkSetMember = '';
+  it('creates a networkset', () => {
+  
+    return ndexclient.createNetworkSet(networkSetData).then(res => {
+      expect(res).to.be.a('string');
+      createdNetworkSet = res;
+    });
+  });
+  
+  it('gets a networkset', () => {
+      return ndexclient.getNetworkSet(createdNetworkSet).then(res => {
+          expect(res.description).to.equal(networkSetData.description);
+          expect(res.name).to.equal(networkSetData.name);
+      });
+  });
+
+  it('updates a networkset', async () => {
+      const updated = {
+          name: 'updated', 
+          description: 'updated'
+      };
+      await ndexclient.updateNetworkSet(createdNetworkSet, updated);
+      await sleep(1000);
+      const updatedNetworkSet = await ndexclient.getNetworkSet(createdNetworkSet);
+      expect(updatedNetworkSet.name).to.equal(updated.name);
+      expect(updatedNetworkSet.description).to.equal(updated.description);
+  });
+  
+  it('adds networks to a networkset', async () => {
+      const network = await ndexclient.getRawNetwork('2977ee7f-1d34-11e7-8145-06832d634f41');
+
+      const network0 = network.splice(0, 1).splice(1, 2);
+
+      const nsBefore = await ndexclient.getNetworkSet(createdNetworkSet);
+      const nsBeforeMembers = nsBefore.networks;
+
+      const network0Id = await ndexclient.createNetworkFromRawCX(network0);
+      createdNetworkSetMember = network0Id;
+
+      await ndexclient.addToNetworkSet(createdNetworkSet, [network0Id]);
+
+      const nsAfter = await ndexclient.getNetworkSet(createdNetworkSet);
+      const nsAfterMembers = nsAfter.networks;
+
+      expect(nsBeforeMembers.length).to.equal(0);
+      expect(nsAfterMembers.length).to.equal(1);
+  });
+
+  it('deletes networks from a networkset', async () => {
+
+      const nsBefore = await ndexclient.getNetworkSet(createdNetworkSet);
+      const nsBeforeMembers = nsBefore.networks;
+
+      const network0Id = createdNetworkSetMember;
+
+      await ndexclient.deleteFromNetworkSet(createdNetworkSet, [network0Id]);
+
+      const nsAfter = await ndexclient.getNetworkSet(createdNetworkSet);
+      const nsAfterMembers = nsAfter.networks;
+
+      expect(nsBeforeMembers.length).to.equal(1);
+      expect(nsAfterMembers.length).to.equal(0);
+  });
+  
+  it('updates networkset system properties', async () => {
+      const nsBefore = await ndexclient.getNetworkSet(createdNetworkSet);
+      await ndexclient.updateNetworkSetSystemProperty(createdNetworkSet, {showcase: true});
+
+      const nsAfter = await ndexclient.getNetworkSet(createdNetworkSet);
+
+      expect(nsBefore.showcased).to.equal(false);
+      expect(nsAfter.showcased).to.equal(true);
+  })
+
+  it('deletes a networkset', () => {
+    return ndexclient.deleteNetworkSet(createdNetworkSet).then(res => {
+      expect(res).to.equal('');
+    });
+  });
+});
