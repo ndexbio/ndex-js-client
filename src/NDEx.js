@@ -1,5 +1,11 @@
 const axios = require('axios');
 
+const CX1_HEADER = {
+  numberVerification: [{
+    "longNumber": 283213721732712
+  }]
+};
+
 class NDEx {
     constructor(hostprefix) {
       if (hostprefix === undefined || hostprefix === null || hostprefix === '') {
@@ -134,7 +140,6 @@ class NDEx {
       return this._httpGetProtectedObjAux(this.host, URL,parameters);
     }
 
-
     _httpPostProtectedObjAux(prefix,  URL, parameters, data) {
       let config = {
         method: 'post',
@@ -163,7 +168,6 @@ class NDEx {
       });
     }
 
-
     _httpPostProtectedObj(URL, parameters, data) {
       return this._httpPostProtectedObjAux(this.host,URL,parameters, data);
     }
@@ -171,7 +175,6 @@ class NDEx {
     _httpPostV3ProtectedObj(URL, parameters, data) {
       return this._httpPostProtectedObjAux(this._v3baseURL,URL,parameters, data);
     }
-
 
     _httpPutObj(URL, parameters, data) {
       let config = {
@@ -199,9 +202,9 @@ class NDEx {
         }
         );
       });
-
     }
-    _httpDeleteObj(URL, parameters) {
+
+    _httpDeleteObj(URL, parameters, data) {
       let config = {
         method: 'delete',
         url: URL,
@@ -212,6 +215,10 @@ class NDEx {
 
       if (parameters !== undefined) {
         config['params'] = parameters;
+      }
+
+      if (data !== undefined) {
+        config['data'] = data;
       }
 
       return new Promise(function (resolve, reject) {
@@ -228,6 +235,8 @@ class NDEx {
       });
 
     }
+
+    /* admin functions */
 
     getStatus() {
       return this._httpGetOpenObj('admin/status');
@@ -503,8 +512,103 @@ class NDEx {
     }
 
     /* network set functions */
+    createNetworkSet({name, description}){
+      return new Promise((resolve, reject)=> {
+        this._httpPostProtectedObj('networkset', undefined, {name, description}).then(
+          (response) => {
+            let uuidr = response.split('/');
+
+            let uuid = uuidr[uuidr.length - 1];
+
+            return resolve(uuid);
+          },
+          (err) => {reject(err);}
+        );
+      });
+    }
+
+    updateNetworkSet(uuid, {name, description}){
+      return new Promise((resolve, reject)=> {
+        this._httpPutObj('networkset/' + uuid, undefined, {uuid, name, description}).then(
+          (response) => {
+            return resolve(response);
+          },
+          (err) => {reject(err);}
+        );
+      });
+    }
+
+    deleteNetworkSet(uuid){
+      return this._httpDeleteObj('networkset/' + uuid);
+    }
+
+    getNetworkSet(uuid, accessKey){
+      let parameters = {};
+
+      if (accessKey !== undefined) {
+        parameters = {accesskey: accessKey};
+      }
+
+      return this._httpGetProtectedObj('networkset/' + uuid, parameters);
+    }
+
+    addToNetworkSet(networkSetUUID, networkUUIDs){
+      return this._httpPostProtectedObj('networkset/' + networkSetUUID + '/members', undefined, networkUUIDs);
+    }
+
+    deleteFromNetworkSet(networkSetUUID, networkUUIDS){
+      return this._httpDeleteObj('networkset/' + networkSetUUID + '/members', undefined, networkUUIDS);
+    }
+
+    updateNetworkSetSystemProperty(networksetUUID, data){
+      return this._httpPutObj('networkset/' + networksetUUID + '/systemproperty', undefined, data);
+    }
+
 
     /* undocumented functions. Might be changed ... */
+
+    // layout update is a list of objects:
+    // [{ node: 1, x: 100, y: 100}, {node: 2, x: 1003, y: 200 }...]
+    updateCartesianLayoutAspect(uuid, nodePositions){
+
+      // 1. get node coordinates from cy.js model in the format of cartesian aspect
+      // 2. generate CX for the put request
+      // 3. example
+      // [{
+      //   "numberVerification": [
+      //     {
+      //       "longNumber": 283213721732712
+      //     }
+      //   ]
+      // }, {
+      //   "metaData": [{
+      //     "name": "cartesianLayout", "elementCount": 100 // num nodes here
+      //   }],
+      //   "cartesianLayout": [{
+      //       "node": 100, "x": 23213.12, "y": 3234.5
+      //     }]
+      //   }]
+      const cartesianLayoutUpdate = [
+        CX1_HEADER,
+        {
+          metaData: [{
+            name: 'cartesianLayout',
+            elementCount: nodePositions.length
+          }]
+        },
+        {
+          cartesianLayout: nodePositions
+        },
+        {
+          status: [{
+            error: '',
+            success: true
+          }]
+        }
+      ]
+
+      return this._httpPutObj(`network/${uuid}/aspects`, undefined, cartesianLayoutUpdate);
+    }
 
     // new v3 functions
     getRandomEdges(uuid, limit, accessKey ) {
@@ -604,6 +708,23 @@ class NDEx {
     ;
 
     return this._httpPostProtectedObj('admin/request', {}, cancelBody);
+  }
+
+
+  // unstable function to upload CX2 to NDEx
+  createNetworkFromRawCX2(rawCX2, parameters) {
+    return new Promise((resolve, reject) =>{
+      this._httpPostV3ProtectedObj('networks', parameters, rawCX2).then(
+        (response) => {
+          let uuidr = response.split('/');
+
+          let uuid = uuidr[uuidr.length - 1];
+
+          return resolve(uuid);
+        },
+        (err) => {reject(err);}
+      );
+    });
   }
 
 }
