@@ -710,5 +710,22 @@ class NDEx {
     return this._httpPostProtectedObj('admin/request', {}, cancelBody);
   }
 
+
+  // unstable function to upload CX2 to NDEx
+  createNetworkFromRawCX2(rawCX2, parameters) {
+    return new Promise((resolve, reject) =>{
+      this._httpPostV3ProtectedObj('networks', parameters, rawCX2).then(
+        (response) => {
+          let uuidr = response.split('/');
+
+          let uuid = uuidr[uuidr.length - 1];
+
+          return resolve(uuid);
+        },
+        (err) => {reject(err);}
+      );
+    });
+  }
+
 }
   module.exports = { NDEx };
