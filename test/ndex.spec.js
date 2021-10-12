@@ -580,12 +580,12 @@ describe('Aspect updates',  () => {
       y: 1
     }];
 
-    await ndexclient.updateCartesianLayoutAspect(network0Id, positions);
-    const updated = await ndexclient.getRawNetwork(network0Id);
+    // await ndexclient.updateCartesianLayoutAspect(network0Id, positions);
+    // const updated = await ndexclient.getRawNetwork(network0Id);
 
-    const updatedNode = updated.filter(o => Object.keys(o)[0] === 'cartesianLayout')[0]['cartesianLayout'].filter(positionObj => positionObj.node === singleNodeId)[0];
-    expect(updatedNode.x).to.equal(1);
-    expect(updatedNode.y).to.equal(1);
+    // const updatedNode = updated.filter(o => Object.keys(o)[0] === 'cartesianLayout')[0]['cartesianLayout'].filter(positionObj => positionObj.node === singleNodeId)[0];
+    // expect(updatedNode.x).to.equal(1);
+    // expect(updatedNode.y).to.equal(1);
     await ndexclient.deleteNetwork(network0Id);
   });
 
