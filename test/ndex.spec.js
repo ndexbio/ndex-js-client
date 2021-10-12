@@ -450,21 +450,21 @@ describe('Search function test', () =>{
 describe('Networkset tests', () => {
   let ndexclient = new NDEx('http://dev.ndexbio.org/v2');
   ndexclient.setBasicAuth(testAccount.username, testAccount.password);
-  const networkSetData = { 
-      name: 'ndex-client-test-networkset', 
+  const networkSetData = {
+      name: 'ndex-client-test-networkset',
       description: 'test networkset'
   };
 
   let createdNetworkSet = '';
   let createdNetworkSetMember = '';
   it('creates a networkset', () => {
-  
+
     return ndexclient.createNetworkSet(networkSetData).then(res => {
       expect(res).to.be.a('string');
       createdNetworkSet = res;
     });
   });
-  
+
   it('gets a networkset', () => {
       return ndexclient.getNetworkSet(createdNetworkSet).then(res => {
           expect(res.description).to.equal(networkSetData.description);
@@ -474,16 +474,15 @@ describe('Networkset tests', () => {
 
   it('updates a networkset', async () => {
       const updated = {
-          name: 'updated', 
+          name: 'updated',
           description: 'updated'
       };
       await ndexclient.updateNetworkSet(createdNetworkSet, updated);
-      await sleep(1000);
       const updatedNetworkSet = await ndexclient.getNetworkSet(createdNetworkSet);
       expect(updatedNetworkSet.name).to.equal(updated.name);
       expect(updatedNetworkSet.description).to.equal(updated.description);
   });
-  
+
   it('adds networks to a networkset', async () => {
       const network = await ndexclient.getRawNetwork('2977ee7f-1d34-11e7-8145-06832d634f41');
 
@@ -519,7 +518,7 @@ describe('Networkset tests', () => {
       expect(nsBeforeMembers.length).to.equal(1);
       expect(nsAfterMembers.length).to.equal(0);
   });
-  
+
   it('updates networkset system properties', async () => {
       const nsBefore = await ndexclient.getNetworkSet(createdNetworkSet);
       await ndexclient.updateNetworkSetSystemProperty(createdNetworkSet, {showcase: true});
@@ -573,7 +572,7 @@ describe('Aspect updates',  () => {
     const network0Id = await ndexclient.createNetworkFromRawCX(network);
     const network0 = await ndexclient.getRawNetwork(network0Id);
     const nodes = network0.filter(o => Object.keys(o)[0] === 'nodes')[0];
-    
+
     const singleNodeId = nodes['nodes'][0]['@id'];
     const positions = [{
       node: singleNodeId,
@@ -602,7 +601,7 @@ describe('Aspect updates',  () => {
         y: 100
       };
     });
-    
+
     // the network doesnt have a cartesian layout aspect
     expect(network.filter(o => Object.keys(o)[0] === 'cartesianLayout').length).to.equal(0);
 
@@ -630,7 +629,7 @@ describe('Aspect updates',  () => {
       x: 1,
       y: 1
     }];
-    
+
     // the network doesnt have a cartesian layout aspect
     expect(network.filter(o => Object.keys(o)[0] === 'cartesianLayout').length).to.equal(0);
 
