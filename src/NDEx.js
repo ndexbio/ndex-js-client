@@ -712,18 +712,21 @@ class NDEx {
 
 
   // unstable function to upload CX2 to NDEx
-  createNetworkFromRawCX2(rawCX2, parameters) {
-    return new Promise((resolve, reject) =>{
-      this._httpPostV3ProtectedObj('networks', parameters, rawCX2).then(
-        (response) => {
-          let uuidr = response.split('/');
+  createNetworkFromRawCX2(rawCX2) {
+    let config = {
+      method: 'post',
+      url: 'networks',
+      baseURL: this._v3baseURL
+    };
 
-          let uuid = uuidr[uuidr.length - 1];
+    this._setAuthHeader(config);
+    config.data = rawCX2;
 
-          return resolve(uuid);
-        },
-        (err) => {reject(err);}
-      );
+    return axios(config).then(res => {
+      let { location } = res.headers;
+      let uuid = location.split('/').pop();
+
+      return { uuid };
     });
   }
 
