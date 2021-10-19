@@ -712,11 +712,14 @@ class NDEx {
 
 
   // unstable function to upload CX2 to NDEx
-  createNetworkFromRawCX2(rawCX2) {
+  createNetworkFromRawCX2(rawCX2, makePublic = false) {
     let config = {
       method: 'post',
       url: 'networks',
-      baseURL: this._v3baseURL
+      baseURL: this._v3baseURL,
+      params: {
+        visibility: makePublic ? 'PUBLIC' : 'PRIVATE'
+      }
     };
 
     this._setAuthHeader(config);
