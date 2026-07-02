@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> # This library is deprecated. Please use the [@js4cytoscape/ndex-client ](https://www.npmjs.com/package/@js4cytoscape/ndex-client/)  libary instead
+
 # NDEx Javascript client
 
 Webpack based NDEx client libraries (Input: ES6, Output: universal library)
